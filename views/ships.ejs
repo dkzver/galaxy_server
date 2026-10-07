@@ -1,0 +1,60 @@
+<%- include('partials/header', { pageTitle: 'Корабли' }) %>
+
+<h1>Корабли</h1>
+
+<% if (flash === 'saved') { %><div class="flash">Сохранено ✔</div><% } %>
+
+<div class="card">
+  <h2 style="margin-top:0">Новый корабль</h2>
+  <form method="post" action="/ships">
+    <div class="form-row">
+      <div class="field" style="flex:1; min-width:200px">
+        <label>Название</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="field" style="flex:2; min-width:240px">
+        <label>Описание</label>
+        <input type="text" name="description">
+      </div>
+      <button class="btn" type="submit">Создать</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <% rows.forEach(function (s) { %>
+    <form id="f-<%= s.id %>" method="post" action="/ships/<%= s.id %>"></form>
+  <% }); %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Название</th><th>Описание</th><th>Слоты</th>
+        <th style="width:230px">Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!rows.length) { %>
+        <tr><td colspan="5" class="empty">Пока пусто — создайте первый корабль выше.</td></tr>
+      <% } %>
+      <% rows.forEach(function (s) { %>
+        <tr>
+          <td><%= s.id %></td>
+          <td><input type="text" name="name" value="<%= s.name %>" form="f-<%= s.id %>" required></td>
+          <td><input type="text" name="description" value="<%= s.description || '' %>" form="f-<%= s.id %>"></td>
+          <td><a href="/ships/<%= s.id %>"><%= s.slot_count %> шт.</a></td>
+          <td class="actions">
+            <button class="btn btn-sm" type="submit" form="f-<%= s.id %>">Сохранить</button>
+            <a class="btn btn-sm" href="/ships/<%= s.id %>" style="background:#334155">Изменить</a>
+            <form class="inline-form" method="post" action="/ships/<%= s.id %>/delete"
+                  onsubmit="return confirm('Удалить корабль «<%= s.name %>» со слотами и значениями свойств?');">
+              <button class="btn btn-sm btn-danger" type="submit">Удалить</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('partials/footer') %>

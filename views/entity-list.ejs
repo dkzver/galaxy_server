@@ -1,0 +1,56 @@
+<%- include('partials/header', { pageTitle: title }) %>
+
+<h1><%= title %></h1>
+
+<% if (flash === 'saved') { %><div class="flash">Сохранено ✔</div><% } %>
+
+<div class="card">
+  <h2 style="margin-top:0">Новый объект</h2>
+  <form method="post" action="<%= url %>">
+    <div class="form-row">
+      <div class="field" style="flex:1; min-width:200px">
+        <label>Название</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="field" style="flex:2; min-width:240px">
+        <label>Описание</label>
+        <input type="text" name="description">
+      </div>
+      <button class="btn" type="submit">Создать</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Название</th><th>Описание</th>
+        <% if (extraCol) { %><th><%= extraCol.header %></th><% } %>
+        <th style="width:170px">Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!rows.length) { %>
+        <tr><td colspan="5" class="empty">Пока пусто — создайте первый объект выше.</td></tr>
+      <% } %>
+      <% rows.forEach(function (r) { %>
+        <tr>
+          <td><%= r.id %></td>
+          <td><a href="<%= url %>/<%= r.id %>"><%= r.name %></a></td>
+          <td class="muted"><%= r.description || '' %></td>
+          <% if (extraCol) { %><td><%= r[extraCol.field] %></td><% } %>
+          <td class="actions">
+            <a class="btn btn-sm" href="<%= url %>/<%= r.id %>">Изменить</a>
+            <form class="inline-form" method="post" action="<%= url %>/<%= r.id %>/delete"
+                  onsubmit="return confirm('Удалить «<%= r.name %>»? Будут удалены свойства и связанные записи.');">
+              <button class="btn btn-sm btn-danger" type="submit">Удалить</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('partials/footer') %>

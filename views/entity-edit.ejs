@@ -1,0 +1,38 @@
+<%- include('partials/header', { pageTitle: title + ' #' + entity.id }) %>
+
+<% const formId = 'f-' + entity.id; %>
+<form id="<%= formId %>" method="post" action="<%= url %>/<%= entity.id %>"></form>
+
+<h1><%= title %>: <%= entity.name %></h1>
+
+<% if (flash === 'saved') { %><div class="flash">Сохранено ✔</div><% } %>
+
+<div class="card">
+  <h2 style="margin-top:0">Основное</h2>
+  <div class="form-row">
+    <div class="field" style="flex:1; min-width:200px">
+      <label>Название</label>
+      <input type="text" name="name" value="<%= entity.name %>" form="<%= formId %>" required>
+    </div>
+    <div class="field" style="flex:2; min-width:240px">
+      <label>Описание</label>
+      <input type="text" name="description" value="<%= entity.description || '' %>" form="<%= formId %>">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Свойства</h2>
+  <%- include('partials/entity-props', { props: props, formId: formId }) %>
+</div>
+
+<div style="display:flex; gap:10px; align-items:center;">
+  <button class="btn" type="submit" form="<%= formId %>">Сохранить</button>
+  <a class="btn btn-sm" href="<%= url %>" style="background:#334155">← К списку</a>
+  <form class="inline-form" method="post" action="<%= url %>/<%= entity.id %>/delete"
+        onsubmit="return confirm('Удалить «<%= entity.name %>» вместе со значениями свойств?');">
+    <button class="btn btn-danger" type="submit">Удалить</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

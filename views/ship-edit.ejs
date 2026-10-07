@@ -1,0 +1,92 @@
+<%- include('partials/header', { pageTitle: 'Корабль: ' + entity.name }) %>
+
+<% const formId = 'f-' + entity.id; %>
+<!-- Вынесенная форма: все inputs (основное + свойства) ссылаются на неё через form="<%= formId %>" -->
+<form id="<%= formId %>" method="post" action="/ships/<%= entity.id %>"></form>
+
+<h1>Корабль: <%= entity.name %></h1>
+
+<% if (flash === 'saved') { %><div class="flash">Сохранено ✔</div><% } %>
+
+<div class="card">
+  <h2 style="margin-top:0">Основное</h2>
+  <div class="form-row">
+    <div class="field" style="flex:1; min-width:200px">
+      <label>Название</label>
+      <input type="text" name="name" value="<%= entity.name %>" form="<%= formId %>" required>
+    </div>
+    <div class="field" style="flex:2; min-width:240px">
+      <label>Описание</label>
+      <input type="text" name="description" value="<%= entity.description || '' %>" form="<%= formId %>">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Свойства корабля</h2>
+  <%- include('partials/entity-props', { props: props, formId: formId }) %>
+</div>
+
+<div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
+  <button class="btn" type="submit" form="<%= formId %>">Сохранить корабль и свойства</button>
+  <a class="btn btn-sm" href="/ships" style="background:#334155">← К списку</a>
+  <form class="inline-form" method="post" action="/ships/<%= entity.id %>/delete"
+        onsubmit="return confirm('Удалить корабль «<%= entity.name %>» со всеми слотами и значениями свойств?');">
+    <button class="btn btn-danger" type="submit">Удалить корабль</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Слоты корабля</h2>
+
+  <!-- Вынесенные формы для каждого слота -->
+  <% slots.forEach(function (s) { %>
+    <form id="fs-<%= s.id %>" method="post" action="/ships/<%= entity.id %>/slots/<%= s.id %>"></form>
+  <% }); %>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Название</th><th>Тип слота</th><th>Позиция</th><th style="width:170px">Действия</th></tr>
+    </thead>
+    <tbody>
+      <% if (!slots.length) { %>
+        <tr><td colspan="5" class="empty">Слотов пока нет — добавьте первый ниже.</td></tr>
+      <% } %>
+      <% slots.forEach(function (s) { %>
+        <tr>
+          <td><%= s.id %></td>
+          <td><input type="text" name="name" value="<%= s.name %>" form="fs-<%= s.id %>" required></td>
+          <td><input type="text" name="slot_type" value="<%= s.slot_type || '' %>" form="fs-<%= s.id %>" placeholder="weapon / engine…"></td>
+          <td><input type="number" name="position" value="<%= s.position %>" form="fs-<%= s.id %>"></td>
+          <td class="actions">
+            <button class="btn btn-sm" type="submit" form="fs-<%= s.id %>">Сохранить</button>
+            <form class="inline-form" method="post" action="/ships/<%= entity.id %>/slots/<%= s.id %>/delete"
+                  onsubmit="return confirm('Удалить слот «<%= s.name %>»?');">
+              <button class="btn btn-sm btn-danger" type="submit">Удалить</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <form method="post" action="/ships/<%= entity.id %>/slots" style="margin-top:14px">
+    <div class="form-row">
+      <div class="field">
+        <label>Новый слот: название</label>
+        <input type="text" name="name" placeholder="Top turret" required>
+      </div>
+      <div class="field">
+        <label>Тип</label>
+        <input type="text" name="slot_type" placeholder="weapon">
+      </div>
+      <div class="field">
+        <label>Позиция</label>
+        <input type="number" name="position" value="0">
+      </div>
+      <button class="btn" type="submit">Добавить слот</button>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
