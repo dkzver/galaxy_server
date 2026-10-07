@@ -1,0 +1,71 @@
+<%- include('partials/header', { pageTitle: 'Свойства' }) %>
+
+<h1>Свойства</h1>
+
+<% if (error) { %><div class="error"><%= error %></div><% } %>
+
+<div class="card">
+  <h2 style="margin-top:0">Новое свойство</h2>
+  <form method="post" action="/properties">
+    <div class="form-row">
+      <div class="field" style="flex:1; min-width:180px">
+        <label>Название (уникальное)</label>
+        <input type="text" name="name" value="<%= edit ? (edit.name || '') : '' %>" required>
+      </div>
+      <div class="field">
+        <label>Тип</label>
+        <select name="type">
+          <option value="string"  <%= edit && edit.type === 'string'  ? 'selected' : '' %>>string</option>
+          <option value="number"  <%= edit && edit.type === 'number'  ? 'selected' : '' %>>number</option>
+          <option value="boolean" <%= edit && edit.type === 'boolean' ? 'selected' : '' %>>boolean</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Единица измерения</label>
+        <input type="text" name="unit" value="<%= edit ? (edit.unit || '') : '' %>" placeholder="м/с, т, pts…">
+      </div>
+      <button class="btn" type="submit">Создать</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Список свойств</h2>
+  <% props.forEach(function (p) { %>
+    <form id="f-<%= p.id %>" method="post" action="/properties/<%= p.id %>"></form>
+  <% }); %>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Название</th><th>Тип</th><th>Ед.</th><th style="width:170px">Действия</th></tr>
+    </thead>
+    <tbody>
+      <% if (!props.length) { %>
+        <tr><td colspan="5" class="empty">Свойств пока нет.</td></tr>
+      <% } %>
+      <% props.forEach(function (p) { %>
+        <tr>
+          <td><%= p.id %></td>
+          <td><input type="text" name="name" value="<%= p.name %>" form="f-<%= p.id %>" required></td>
+          <td>
+            <select name="type" form="f-<%= p.id %>">
+              <option value="string"  <%= p.type === 'string'  ? 'selected' : '' %>>string</option>
+              <option value="number"  <%= p.type === 'number'  ? 'selected' : '' %>>number</option>
+              <option value="boolean" <%= p.type === 'boolean' ? 'selected' : '' %>>boolean</option>
+            </select>
+          </td>
+          <td><input type="text" name="unit" value="<%= p.unit || '' %>" form="f-<%= p.id %>"></td>
+          <td class="actions">
+            <button class="btn btn-sm" type="submit" form="f-<%= p.id %>">Сохранить</button>
+            <form class="inline-form" method="post" action="/properties/<%= p.id %>/delete"
+                  onsubmit="return confirm('Удалить свойство «<%= p.name %>» и все его значения?');">
+              <button class="btn btn-sm btn-danger" type="submit">Удалить</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('partials/footer') %>

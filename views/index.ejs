@@ -1,0 +1,32 @@
+<%- include('partials/header', { pageTitle: 'Главная' }) %>
+
+<h1>Панель управления космической игрой</h1>
+
+<div class="dash-grid">
+  <a class="dash-card" href="/properties">
+    <div class="num"><%= counts.properties %></div>
+    <div class="lbl">Свойства</div>
+  </a>
+  <a class="dash-card" href="/ships">
+    <div class="num"><%= counts.ships %></div>
+    <div class="lbl">Корабли</div>
+  </a>
+  <a class="dash-card" href="/equipment">
+    <div class="num"><%= counts.equipment %></div>
+    <div class="lbl">Оборудование</div>
+  </a>
+  <a class="dash-card" href="/resources">
+    <div class="num"><%= counts.resources %></div>
+    <div class="lbl">Ресурсы</div>
+  </a>
+  <div class="dash-card">
+    <div class="num"><%= counts.slots %></div>
+    <div class="lbl">Слоты кораблей</div>
+  </div>
+</div>
+
+<p class="muted" style="margin-top:24px">
+  SQLite-БД создаётся автоматически при первом запуске. Справочник свойств заполнен базовыми примерами.
+</p>
+
+<%- include('partials/footer') %>

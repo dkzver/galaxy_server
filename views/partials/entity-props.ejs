@@ -1,0 +1,35 @@
+<%#
+  partials/entity-props.ejs — таблица свойств сущности (EAV).
+  Ожидает: props [{id,name,type,unit,val}] и formId (вынесенная форма).
+  number -> input type="number", boolean -> select «— / Да / Нет».
+%>
+<table>
+  <thead>
+    <tr><th>Свойство</th><th>Ед.</th><th style="width:45%">Значение</th></tr>
+  </thead>
+  <tbody>
+    <% if (!props.length) { %>
+      <tr><td colspan="3" class="empty">Свойств пока нет — создайте их в разделе «Свойства».</td></tr>
+    <% } %>
+    <% props.forEach(function (p) { %>
+      <tr>
+        <td><%= p.name %></td>
+        <td class="unit"><%= p.unit || '' %></td>
+        <td>
+          <input type="hidden" name="prop_type[<%= p.id %>]" value="<%= p.type %>" form="<%= formId %>">
+          <% if (p.type === 'boolean') { %>
+            <select name="prop[<%= p.id %>]" form="<%= formId %>">
+              <option value="" <%= p.val === '' || p.val == null ? 'selected' : '' %>>—</option>
+              <option value="true"  <%= p.val === 'true'  ? 'selected' : '' %>>Да</option>
+              <option value="false" <%= p.val === 'false' ? 'selected' : '' %>>Нет</option>
+            </select>
+          <% } else if (p.type === 'number') { %>
+            <input type="number" step="any" name="prop[<%= p.id %>]" value="<%= p.val %>" form="<%= formId %>">
+          <% } else { %>
+            <input type="text" name="prop[<%= p.id %>]" value="<%= p.val %>" form="<%= formId %>">
+          <% } %>
+        </td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>

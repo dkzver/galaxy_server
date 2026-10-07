@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' — ' : '' %>Space Admin</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<nav class="topbar">
+  <% const path = (typeof currentPath !== 'undefined' && currentPath) || '/'; %>
+  <span class="brand">🚀 Space Admin</span>
+  <a class="nav-link <%= path === '/' ? 'active' : '' %>" href="/">Главная</a>
+  <a class="nav-link <%= path.startsWith('/properties') ? 'active' : '' %>" href="/properties">Свойства</a>
+  <a class="nav-link <%= path.startsWith('/ships') ? 'active' : '' %>" href="/ships">Корабли</a>
+  <a class="nav-link <%= path.startsWith('/equipment') ? 'active' : '' %>" href="/equipment">Оборудование</a>
+  <a class="nav-link <%= path.startsWith('/resources') ? 'active' : '' %>" href="/resources">Ресурсы</a>
+</nav>
+<main>
